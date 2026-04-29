@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人信息卡片</title>
+    <style>
+        /* 全局初始化 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+            transition: all 0.3s ease; /* 平滑切换动画 */
+        }
+
+        /* 浅色模式背景 */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* 深色模式背景 */
+        body.dark {
+            background: #1a1a2e;
+        }
+
+        /* 深色模式切换按钮 */
+        #theme-btn {
+            padding: 8px 16px;
+            margin-bottom: 20px;
+            background: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* 标题 */
+        .page-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* 卡片样式 */
+        .card {
+            width: 100%;
+            max-width: 450px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 深色模式卡片 */
+        .dark .card {
+            background: #252542;
+        }
+
+        /* 圆形头像 */
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #409eff;
+            cursor: pointer;
+        }
+
+        /* 隐藏文件上传按钮 */
+        #avatar-input {
+            display: none;
+        }
+
+        /* 信息区域 */
+        .info-display {
+            text-align: center;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        /* 姓名样式 */
+        #name-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        /* 深色模式文字颜色 */
+        .dark #name-display,
+        .dark #bio-display {
+            color: #eee;
+        }
+
+        /* 简介样式 */
+        #bio-display {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            cursor: pointer;
+        }
+
+        /* 输入框样式 */
+        .edit-input {
+            width: 100%;
+            padding: 10px 15px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* 深色模式输入框 */
+        .dark .edit-input {
+            background: #333;
+            color: white;
+            border-color: #555;
+        }
+
+        /* 保存按钮 */
+        #save-btn {
+            padding: 12px 35px;
+            background-color: #409eff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- 深色模式切换按钮 -->
+    <button id="theme-btn">切换黑夜模式</button>
+
+    <h1 class="page-title">个人信息卡片</h1>
+
+    <div class="card">
+        <!-- 头像区域 -->
+        <div class="avatar-container">
+            <img src="https://img0.baidu.com/it/u=1831655280,3805279949&fm=253&app=138&f=JPEG?w=800&h=889" 
+                 alt="头像" class="avatar" id="avatar-preview">
+            <input type="file" id="avatar-input" accept="image/*">
+        </div>
+
+        <!-- 信息编辑区域 -->
+        <div class="info-display">
+            <div id="name-display">点击编辑姓名</div>
+            <input type="text" class="edit-input" id="name-input" style="display: none;">
+
+            <div id="bio-display">点击编辑个人简介</div>
+            <textarea class="edit-input" id="bio-input" rows="3" style="display: none;"></textarea>
+        </div>
+
+        <button id="save-btn">保存修改</button>
+    </div>
+
+    <script>
+        // 获取元素
+        const avatarPreview = document.getElementById('avatar-preview');
+        const avatarInput = document.getElementById('avatar-input');
+        const nameDisplay = document.getElementById('name-display');
+        const nameInput = document.getElementById('name-input');
+        const bioDisplay = document.getElementById('bio-display');
+        const bioInput = document.getElementById('bio-input');
+        const saveBtn = document.getElementById('save-btn');
+        const themeBtn = document.getElementById('theme-btn');
+        const body = document.body;
+
+        // 1. 头像点击上传
+        avatarPreview.addEventListener('click', () => avatarInput.click());
+
+        // 2. 头像实时预览
+        avatarInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => avatarPreview.src = ev.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 3. 姓名编辑
+        nameDisplay.addEventListener('click', () => {
+            nameInput.value = nameDisplay.innerText;
+            nameDisplay.style.display = 'none';
+            nameInput.style.display = 'block';
+            nameInput.focus();
+        });
+
+        // 4. 简介编辑
+        bioDisplay.addEventListener('click', () => {
+            bioInput.value = bioDisplay.innerText;
+            bioDisplay.style.display = 'none';
+            bioInput.style.display = 'block';
+            bioInput.focus();
+        });
+
+        // 5. 保存修改
+        saveBtn.addEventListener('click', () => {
+            nameDisplay.innerText = nameInput.value || nameDisplay.innerText;
+            bioDisplay.innerText = bioInput.value || bioDisplay.innerText;
+            
+            nameInput.style.display = 'none';
+            nameDisplay.style.display = 'block';
+            bioInput.style.display = 'none';
+            bioDisplay.style.display = 'block';
+        });
+
+        // 6. 深色模式切换
+        themeBtn.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            
+            // 切换按钮文字
+            if(body.classList.contains('dark')){
+                themeBtn.innerText = "浅色模式";
+            }else{
+                themeBtn.innerText = "深色模式";
+            }
+        });
+    </script>
+</body>
+</html>
